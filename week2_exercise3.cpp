@@ -52,21 +52,29 @@ public:
 //TOUCH NOTHING ABOVE THIS
 
 int main() {
-    srand(2); //MODIFY THIS TO CHANGE THE READ PACKET TEST CASE
+    srand(0); //MODIFY THIS TO CHANGE THE READ PACKET TEST CASE
     CAN canbus; //usually this has parameters, but since this isn't real and we're running this on a standard compiler, it doesn't
     
-    int16_t angle = 0;
-    int16_t velocity = 0;
-    int16_t torque = 0;
-    int8_t temperature = 0; 
+    int16_t angle = 8000;
+    int16_t velocity = 8000;
+    int16_t torque = -800;
+    int8_t temperature = 90; 
     //test cases: angle, velocity, torque, temperature
     //test case 1: 1300, 2140, 382, 10
     //test case 2: 8000, -5000, -800, 90
     //test case 3: 8000, 400, -10000, 200
     
-    
     //TODO: ENCODE THE DATA TO SEND TO THE MOTOR
-    uint8_t data_send[8] = {0,0,0,0,0,0,0,0};
+    uint8_t angleHigh = angle >> 8;
+    uint8_t angleLow = angle & 0xFF;
+    uint8_t velocityHigh = velocity >> 8;
+    uint8_t velocityLow = velocity & 0xFF;
+    uint8_t torqueHigh = torque >> 8;
+    uint8_t torqueLow = torque & 0xFF;
+    
+    
+    
+    uint8_t data_send[8] = {angleHigh,angleLow,velocityHigh,velocityLow,torqueHigh,torqueLow,temperature};
     short len_send = 8;
     short id_send = 0x1FF;
     
@@ -82,6 +90,14 @@ int main() {
     canbus.readPacket(&id_recv, data_recv, &len_recv);
     
     //TODO: DECODE THE DATA RECIEVED BY THE MOTOR, YOU SHOULD GET DIFFERENT DATA DEPENDING ON SRAND
+    int16_t recvAngle = (data_recv[0] << 8 ) | data_recv[1];
+    int16_t recvVelocity = (data_recv[2] << 8) | data_recv[3];
+    int16_t recvTorque = (data_recv[4] << 8) | data_recv[5];
+    int8_t recvTemperature = (data_recv[6]);
+    
+    printf("In integers that is: angle: %d | velocity: %d | torque: %d \ temperature %d", recvAngle,recvVelocity,recvTorque,recvTemperature);
+    
+    
     // srand(0): 1383, -5114, 27, 85
     // srand(2): 6138, 6719, 38, 65
     // srand(4): 7645, 4083, 124, 86
