@@ -26,9 +26,17 @@ char numberToLetter(char i){
     return i + 'a';
 }
 
+int x = 0;
+
 int main(void)
 {
     //CODE GOES HERE 
-
+    
+    for (int i = 0; inputString[i] != '\0';i++) {
+    
+    x = letterToNumber(inputString[i]) + 1;
+    
+    putc(numberToLetter(x%26));
+    }
+    
     putc('\n');
-}
