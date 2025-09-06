@@ -5,6 +5,8 @@
 const int BUFFER_SIZE = 98;
 const int offset = 1;
 #include <iostream>
+#include <bitset>
+
 
 static unsigned char inputString[] = 
 {0x84,0x1d,0x3d,0x74,0x1e,0x3d,0x74,0x1e,
@@ -45,6 +47,35 @@ void putc_bin(char c){
 int main(void)
 {
     //CODE GOES HERE 
+    //std::bitset<8> binary(inputString[0]);
+    //std::cout << binary;
+    
+    for (int i = 0; inputString[i] != '\0';i++) {
+        std::bitset<8> x(inputString[i]);
+        std::bitset<8> y = x;
+        
+        x.flip(2);
+        y[7] = x[2];
+        
+        x.flip(1);
+        y[6] = x[1];
+        
+        y[5] = x[4];
+        
+        x.flip(3);
+        y[4] = x[3];
+        
+        y[3] = x[0];
+        y[2] = x[7];
+        y[1] = x[6];
+        y[0] = x[5];
+        
+        unsigned long z = y.to_ulong();
+        
+        char a = static_cast<char>(z);
+        putc(a);
+    }
+    
 
     putc('\n');
 }
